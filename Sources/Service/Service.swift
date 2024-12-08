@@ -305,6 +305,9 @@ final class BackupService {
         if content.contains(oneOf: Strings.loginStrings) {
             // Login event
             let playerCount = container.incrementPlayerCount()
+			
+			Backups.updatePlayerCount(increment: true)
+			
             BackupService.logger.info("Player Logged In: \(container.name), Players Active: \(playerCount)")
             if config.schedule?.onPlayerLogin == true {
                 await self.backupActor.backupContainer(container: container)
@@ -314,6 +317,9 @@ final class BackupService {
         if content.contains(oneOf: Strings.logoutStrings) {
             // Logout event
             let playerCount = container.decrementPlayerCount()
+			
+			Backups.updatePlayerCount(increment: false)
+			
             BackupService.logger.info("Player Logged Out: \(container.name), Players Active: \(playerCount)")
             if config.schedule?.onPlayerLogout == true {
                 await self.backupActor.backupContainer(container: container)

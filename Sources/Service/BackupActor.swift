@@ -157,6 +157,12 @@ actor BackupActor {
         guard shouldRunBackup(container: container) else {
             return
         }
+		
+		// *** Check if players are online using the onlinePlayers count ***
+		if Backups.onlinePlayers == 0 {
+			BackupService.logger.info("No players online, skipping backup for \(container.name).")
+			return
+		}
 
         BackupService.logger.info("Running Single Backup for \(container.name)")
         do {

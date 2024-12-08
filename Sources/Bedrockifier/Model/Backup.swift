@@ -110,6 +110,8 @@ public struct Backups {
             }
         }
     }
+	
+	public static var onlinePlayers = 0 // Variable to track online players
 
     static func getBackups<ItemType>(_ type: ItemType.Type, at folder: URL) throws -> [String: [Backup<ItemType>]] {
         var results: [String: [Backup<ItemType>]] = [:]
@@ -128,6 +130,11 @@ public struct Backups {
             }
 
             if let item = try? ItemType(url: possibleWorld) {
+				if onlinePlayers == 0 {  // Check if any players are online
+					Library.log.info("No players online, skipping backup for world \(item.name).")
+					continue // Skip this world if no players are online
+				}
+				
                 var array = results[item.name] ?? []
                 array.append(Backup<ItemType>(item: item, date: modificationDate))
                 results[item.name] = array
@@ -136,6 +143,19 @@ public struct Backups {
 
         return results
     }
+	
+	// *** New function to increment/decrement onlinePlayers ***
+	public static func updatePlayerCount(increment: Bool) {
+		if increment {
+			onlinePlayers += 1
+		} else {
+			onlinePlayers -= 1
+			if onlinePlayers < 0 { // Ensure the count doesn't go below 0
+				onlinePlayers = 0
+			}
+		}
+		Library.log.debug("Online players updated: \(onlinePlayers)")
+	}
 }
 
 extension Array where Element: BackupProtocol {
