@@ -4,10 +4,10 @@
 
 set -euo pipefail
 
-tag=${1:-dev}
+tag=1.0
 COMMIT=${2:-main}
 PUSH=${3:-nopush}
-dockerRepo=kaiede/minecraft-bedrock-backup
+dockerRepo=tekoxvi/minecraft-bedrock-backup
 dockerBaseTag=$dockerRepo:${tag}
 
 TARGETOS='linux'
@@ -22,7 +22,8 @@ fi
 
 #. Docker/configure.sh $arch
 
-dockerTag=$dockerRepo:${tag}-${TARGETARCH}
+#dockerTag=$dockerRepo:${tag}-${TARGETARCH}
+dockerTag=$dockerRepo:${tag}
 
 docker build . -f Docker/Dockerfile \
     -t $dockerTag \
